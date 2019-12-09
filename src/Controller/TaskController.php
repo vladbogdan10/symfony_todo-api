@@ -46,9 +46,11 @@ class TaskController extends AbstractController
         $serializer = new Serializer($normalizers, $encoders);
 
         $jsonData = $serializer->serialize($taskList, 'json');
-        $data = json_decode($jsonData);
 
-        return new JsonResponse($data);
+        $response = JsonResponse::fromJsonString($jsonData);
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+
+        return $response;
     }
 
     /**
