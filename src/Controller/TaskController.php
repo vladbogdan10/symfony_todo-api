@@ -6,6 +6,8 @@ use App\Entity\Task;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -54,13 +56,25 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @Route("todo/create", name="todo_create")
+     * @Route("todo/create", name="todo_create", methods="POST")
+     * @param Request $request
+     * @return Response
      */
-    public function create(): JsonResponse
+    public function create(Request $request): Response
     {
-        return $this->json([
-            'message' => '/todo/create',
-        ]);
+        $content = json_decode($request->getContent(), true);
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $task = new Task();
+        $task->setName($content['name']);
+        $task->setInProgress($content['progress']);
+        $task->setDone($content['done']);
+
+        $entityManager->persist($task);
+        $entityManager->flush();
+
+        return new Response('Saved new task with id '.$task->getId());
     }
 
     /**
