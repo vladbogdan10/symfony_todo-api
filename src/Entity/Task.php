@@ -22,14 +22,9 @@ class Task
     private $name;
 
     /**
-     * @ORM\Column(type="boolean", nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $done;
-
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
-    private $in_progress;
+    private $status;
 
     public function getId(): ?int
     {
@@ -48,26 +43,14 @@ class Task
         return $this;
     }
 
-    public function getDone(): ?bool
+    public function getStatus(): ?string
     {
-        return $this->done;
+        return $this->status;
     }
 
-    public function setDone(?bool $done): self
+    public function setStatus(?string $status): self
     {
-        $this->done = $done;
-
-        return $this;
-    }
-
-    public function getInProgress(): ?bool
-    {
-        return $this->in_progress;
-    }
-
-    public function setInProgress(?bool $in_progress): self
-    {
-        $this->in_progress = $in_progress;
+        $this->status = $status;
 
         return $this;
     }
