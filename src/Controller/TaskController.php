@@ -28,13 +28,14 @@ class TaskController extends AbstractController
      */
     public function todo(): JsonResponse
     {
+        // TODO: list of endpoints
         return $this->json([
             'message' => 'Welcome to todo api',
         ]);
     }
 
     /**
-     * @Route("todo/list", name="todo_list")
+     * @Route("todo/list", name="todo_list", methods="GET")
      */
     public function list(): JsonResponse
     {
@@ -62,14 +63,14 @@ class TaskController extends AbstractController
      */
     public function create(Request $request): Response
     {
+        // TODO: error handling
         $content = json_decode($request->getContent(), true);
 
         $entityManager = $this->getDoctrine()->getManager();
 
         $task = new Task();
         $task->setName($content['name']);
-        $task->setInProgress($content['progress']);
-        $task->setDone($content['done']);
+        $task->setStatus($content['status']);
 
         $entityManager->persist($task);
         $entityManager->flush();
@@ -78,23 +79,48 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @Route("todo/done", name="todo_done")
+     * @Route("todo/status/{id}", name="todo_status", methods="POST")
+     * @param Request $request
+     * @param int|null $id
+     * @return Response
      */
-    public function done(): JsonResponse
+    public function update(Request $request, ?int $id): Response
     {
-        return $this->json([
-            'message' => '/todo/done',
-        ]);
+        // TODO: task name update.
+        $status = $request->query->get('status');
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $task = $entityManager->getRepository(Task::class)->find($id);
+
+        if (!$task) {
+            throw $this->createNotFoundException(
+                'No task found for id '.$id
+            );
+        }
+
+        $task->setStatus($status);
+
+        $entityManager->flush();
+
+        return new Response('Status changed for task with id '.$task->getId());
     }
 
 
     /**
-     * @Route("todo/delete", name="todo_delete")
+     * @Route("todo/delete/{id}", name="todo_delete", methods="POST")
+     * @param int|null $id
+     * @return Response
      */
-    public function delete(): JsonResponse
+    public function delete(?int $id): Response
     {
-        return $this->json([
-            'message' => '/todo/delete',
-        ]);
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $task = $entityManager->getRepository(Task::class)->find($id);
+
+        $entityManager->remove($task);
+        $entityManager->flush();
+
+        return new Response('Removed task with id '.$id);
     }
 }
