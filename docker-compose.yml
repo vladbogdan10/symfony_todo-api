@@ -19,7 +19,7 @@ services:
         image: phpmyadmin/phpmyadmin
         container_name: todo_api-phpmyadmin
         ports:
-            - 8080:80
+            - 8081:80
         links:
             - mysql:db
 
