@@ -41,7 +41,7 @@ class TaskController extends AbstractController
     {
         $taskList = $this->getDoctrine()
             ->getRepository(Task::class)
-            ->findAll();
+            ->findBy([], ['id'=>'DESC']);
 
         $encoders = [new JsonEncoder()];
         $normalizers = [new ObjectNormalizer()];
