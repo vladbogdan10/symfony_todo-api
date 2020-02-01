@@ -67,7 +67,8 @@ class TaskController extends AbstractController
 
         $task = new Task();
         $task->setName($content['name']);
-        $task->setStatus($content['status']);
+        $task->setInProgress($content['progress']);
+        $task->setDone($content['done']);
 
         $entityManager->persist($task);
         $entityManager->flush();
