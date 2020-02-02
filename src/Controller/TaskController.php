@@ -106,7 +106,7 @@ class TaskController extends AbstractController
 
 
     /**
-     * @Route("todo/delete/{id}", name="todo_delete", methods="POST")
+     * @Route("todo/delete/{id}", name="todo_delete", methods="DELETE")
      * @param int|null $id
      * @return Response
      */
