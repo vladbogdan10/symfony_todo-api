@@ -36,12 +36,17 @@ class TaskController extends AbstractController
 
     /**
      * @Route("todo/list", name="todo_list", methods="GET")
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function list(): JsonResponse
+    public function list(Request $request): JsonResponse
     {
-        $taskList = $this->getDoctrine()
-            ->getRepository(Task::class)
-            ->findBy([], ['id'=>'DESC']);
+        $taskRepository = $this->getDoctrine()->getRepository(Task::class);
+        $taskList = $taskRepository->findBy([], ['id'=>'DESC']);
+
+        if ($request->query->has('last')) {
+            $taskList = $taskRepository->findOneBy([], ['id' => 'DESC']);
+        }
 
         $encoders = [new JsonEncoder()];
         $normalizers = [new ObjectNormalizer()];
