@@ -82,15 +82,14 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @Route("todo/status/{id}", name="todo_status", methods="POST")
+     * @Route("todo/update/{id}", name="todo_update", methods="PUT")
      * @param Request $request
      * @param int|null $id
      * @return Response
      */
     public function update(Request $request, ?int $id): Response
     {
-        // TODO: task name update.
-        $status = $request->query->get('status');
+        $content = json_decode($request->getContent(), true);
 
         $entityManager = $this->getDoctrine()->getManager();
 
@@ -102,7 +101,18 @@ class TaskController extends AbstractController
             );
         }
 
-        $task->setStatus($status);
+        // TODO: improve this later
+        if (!empty($content['name'])) {
+            $task->setName($content['name']);
+        }
+
+        if (isset($content['progress'])) {
+            $task->setInProgress($content['progress']);
+        }
+
+        if (isset($content['done'])) {
+            $task->setDone($content['done']);
+        }
 
         $entityManager->flush();
 
